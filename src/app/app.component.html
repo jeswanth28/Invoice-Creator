@@ -1,0 +1,150 @@
+<div class="invoice-box">
+   <div class="col-lg-12 col-lg-offset-4">
+      <h1>Invoice</h1>
+   </div>
+   <table cellpadding="0" cellspacing="0">
+      <tr class="top">
+         <td colspan="2">
+            <table>
+               <tr>
+                  <td class="title" *ngIf="invoiceObject.image != ''">
+                     <img [src]="'data:image/jpg;base64,'+invoiceObject.image" style="width:100%; max-width:300px;">
+                  </td>
+                  <td  >
+                     <label for="filePicker" style="cursor:pointer;"
+                     *ngIf="invoiceObject.image == ''">Select Invoice Image</label>
+                     <input type="file" id="filePicker" style="display:none;"
+                     (change)="handleFileSelect($event)"/>
+                  </td>
+               </tr>
+            </table>
+         </td>
+      </tr>
+      <tr class="details">
+         <th>
+            Name
+         </th>
+         <th>
+            Quantity
+         </th>
+         <th>
+            price
+         </th>
+         <th>
+            Total price per Item
+         </th>
+         <th>
+         </th>
+      </tr>
+      <tr class="details" *ngFor="let item of invoiceObject.items;let i=index;">
+         <td>
+            <ng-container *ngIf="itemIndex!=i">{{item.name}}</ng-container>
+            <ng-container *ngIf="itemIndex==i" ><input type="text" name="item-name" 
+               [(ngModel)]="name"/>
+            </ng-container>
+         </td>
+         <td>
+            <ng-container *ngIf="itemIndex!=i">{{item.quantity}}</ng-container>
+            <ng-container *ngIf="itemIndex==i" ><input type="text" name="item-quantity" 
+               [(ngModel)]="quantity"/>
+            </ng-container>
+         </td>
+         <td>
+            <ng-container *ngIf="itemIndex!=i">{{item.price}}</ng-container>
+            <ng-container *ngIf="itemIndex==i" ><input type="text" name="item-price" 
+               [(ngModel)]="price"/>
+            </ng-container>
+         </td>
+         <td>
+            <ng-container >{{item.price * item.quantity}}</ng-container>
+         </td>
+         <td>
+            <button class="btn btn-primary" *ngIf="itemIndex!=i"  
+            (click)="editItem(i,item.name,item.price,item.quantity)">Edit </button>
+            <button class="btn btn-success" *ngIf="itemIndex==i" 
+            data-toggle="modal" data-target="#myModal" >Done </button>
+         </td>
+         <td>
+            <button class="btn btn-warning" (click)="deleteItem(i,true)">Delete</button>
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <button class="btn btn-primary" (click)="addItem()">Add New </button>
+         </td>
+      </tr>
+      <tr>
+         <td></td>
+         <td></td>
+         <th>Sub Total:</th>
+         <th>{{invoiceObject.itemsAmount}}</th>
+      </tr>
+      <tr *ngFor="let item of invoiceObject.taxItems;let i=index;">
+         <td></td>
+         <td></td>
+         <th>
+            <ng-container *ngIf="taxIndex!=i">{{item.name}}:</ng-container>
+            <ng-container *ngIf="taxIndex==i" ><input type="text" name="taxname" 
+               [(ngModel)]="taxName"/>
+            </ng-container>
+         </th>
+         <th>
+            <ng-container *ngIf="taxIndex!=i">{{item.amount}}</ng-container>
+            <ng-container *ngIf="taxIndex==i" ><input type="text" name="taxamount" 
+               [(ngModel)]="amount"/>
+            </ng-container>
+         </th>
+         <td>
+            <button class="btn btn-primary" *ngIf="taxIndex!=i"  
+            (click)="edittaxItem(i,item.name,item.amount)">Edit </button>
+            <button class="btn btn-success" *ngIf="taxIndex==i" 
+             data-toggle="modal" data-target="#myModal">Done </button>
+         </td>
+         <td>
+            <button class="btn btn-warning" (click)="deleteItem(i,false)">Delete</button>
+         </td>
+      </tr>
+      <tr>
+         <td></td>
+         <td></td>
+         <th><button class="btn btn-primary" (click)="addServiceItem()">Add Tax </button></th>
+         <th> </th>
+      </tr>
+      <tr>
+         <td></td>
+         <td></td>
+         <th>Total:</th>
+         <th>{{invoiceObject.itemsAmount + invoiceObject.taxAmount}}</th>
+      </tr>
+      <tr >
+         <td><button class="btn btn-lg btn-success" (click)="printObject()">Print</button></td>
+       
+      </tr>
+
+
+   </table>
+</div>
+
+ <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure  you want to save the changes?</p>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-success" data-dismiss="modal"
+         (click)="saveItems()">Yes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal"
+          (click)="itemIndex=-1;taxIndex=-1;">No</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
